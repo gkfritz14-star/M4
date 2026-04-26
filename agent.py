@@ -41,19 +41,24 @@ def calculator_tool(expression: str) -> str:
 #   3. If not found, return the list of available product names so the agent
 #      can try again with the correct name
 #
-# @agent.tool_plain
-# def product_lookup(product_name: str) -> str:
-#     """Look up the price of a product by name.
-#     Use this when a question asks about product prices from the catalog.
-#     """
-#     ...
+@agent.tool_plain
+def product_lookup(product_name: str) -> str:
+    """Look up the price of a product by name.
+    Use this when a question asks about product prices from the catalog.
+    """
+    with open("products.json") as f:
+        catalog = json.load(f)
+    if product_name in catalog:
+        return f"The price of {product_name} is ${catalog[product_name]:.2f}."
+    else:
+        return f"Product '{product_name}' not found. Available products: {', '.join(catalog.keys())}"
 
 
 def load_questions(path: str = "math_questions.md") -> list[str]:
     """Load numbered questions from the markdown file."""
     questions = []
-    with open(path) as f:
-        for line in f:
+    with open(path) as f: 
+       for line in f:
             line = line.strip()
             if line and line[0].isdigit() and ". " in line[:4]:
                 questions.append(line.split(". ", 1)[1])
